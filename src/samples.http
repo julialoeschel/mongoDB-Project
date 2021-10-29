@@ -6,30 +6,30 @@ POST http://localhost:3000/Kurse HTTP/1.1
 Content-Type: application/json
 
 {
-  "cursname": "How to goole",
-  "content": "giyf",
-  "classNumber": "004",
-  "trainer":"Klaus Jansen",
-  "location": "Stuttgart"
+  "cursname": "Nähen für linkshänder",
+  "content": "Kleidung nähen",
+  "classNumber": "005",
+  "trainer":"Elka",
+  "location": "Timmendorf"
 }
 ### einfügen neuer Teilnehmer
 POST http://localhost:3000/Kurse/001 HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Julia",
-  "username": "JuLo",
-  "classNumber": "001"
+  "name": "Ines",
+  "username": "Müller",
+  "attendClassNumber": "005"
 }
 
 ### Update content
 PATCH http://localhost:3000/Kurse/update HTTP/1.1
 Content-Type: application/json
 
-{"oldContent" : "Abgefahrenes zeug",
- "newContent" : "toller neuer Python content"}
+{"oldContent" : "Kleidung nähen",
+ "newContent" : "Nähen toller Sachn die keiner braucht"}
 
 
 ### Delete by ClassNumber
-DELETE http://localhost:3000/Kurse/001 HTTP/1.1
+DELETE http://localhost:3000/Kurse/005 HTTP/1.1
 
