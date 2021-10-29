@@ -11,7 +11,13 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+//View DB
+app.get('/Kurse', async (_request, response) => {
+  const CoursList = await getUserCollection().find().toArray();
+  response.send(CoursList);
+});
 
+//post Course
 app.post('/Kurse', async (request, response) => {
   const newCourse = request.body;
   const doesCourseExist = await getUserCollection().findOne({
@@ -27,6 +33,45 @@ app.post('/Kurse', async (request, response) => {
   }
 });
 
+//update Content
+app.patch('/Kurse/update', async (request, response) => {
+  const newContentText = request.body.newContent;
+  const oldContentText = request.body.oldContent;
+  const newValues = { $set: { content: newContentText } };
+  const isExisting = await getUserCollection().findOne({
+    content: oldContentText,
+  });
+  console.log(isExisting);
+
+  if (isExisting) {
+    await getUserCollection().updateOne({ content: oldContentText }, newValues);
+    response.send(`context set to ${newContentText}`);
+  } else {
+    response.send('content not existing');
+  }
+});
+
+//Post Teilnehmner
+app.post('/Kurse/001', async (request, response) => {
+  const newParticipant = request.body;
+  const doesParticipantExist = await getUserCollection().findOne({
+    username: newParticipant.username,
+  });
+  console.log(doesParticipantExist);
+
+  if (doesParticipantExist) {
+    response.send(
+      `Participant with username ${newParticipant.username} already exists`
+    );
+  } else {
+    await getUserCollection().insertOne(newParticipant);
+    response.send(
+      `new Participant with name ${newParticipant.name} added to Course!`
+    );
+  }
+});
+
+//Delete Course
 app.delete('/Kurse/:classNumber', async (request, response) => {
   const classNumberToBeDeleted = request.params.classNumber;
   const doesCourseExist = await getUserCollection().findOne({
@@ -42,6 +87,25 @@ app.delete('/Kurse/:classNumber', async (request, response) => {
   } else
     response.send(
       `DELETE FAIL! Course with Number ${classNumberToBeDeleted} does not exist!`
+    );
+});
+
+//Delete Course
+app.delete('/Kurse/:username', async (request, response) => {
+  const usernameToBeDeleted = request.params.username;
+  const doesCourseExist = await getUserCollection().findOne({
+    username: usernameToBeDeleted,
+  });
+  if (doesCourseExist) {
+    await getUserCollection().deleteOne({
+      username: usernameToBeDeleted,
+    });
+    response.send(
+      `DELETE SUCCESSFULL! username ${usernameToBeDeleted} deleted!`
+    );
+  } else
+    response.send(
+      `DELETE FAIL! username ${usernameToBeDeleted} does not exist!`
     );
 });
 

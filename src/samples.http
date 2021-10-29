@@ -1,14 +1,35 @@
+### View All
+GET http://localhost:3000/Kurse HTTP/1.1
+
 ### add a User to dB
 POST http://localhost:3000/Kurse HTTP/1.1
 Content-Type: application/json
 
 {
-  "cursname": "Web development",
-  "content": "Web-Kram",
-  "classNumber": "001",
-  "trainer":"Jerry",
-  "location": "Hamburg"
+  "cursname": "Nähen für linkshänder",
+  "content": "Kleidung nähen",
+  "classNumber": "005",
+  "trainer":"Elka",
+  "location": "Timmendorf"
+}
+### einfügen neuer Teilnehmer
+POST http://localhost:3000/Kurse/001 HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Ines",
+  "username": "Müller",
+  "attendClassNumber": "005"
 }
 
+### Update content
+PATCH http://localhost:3000/Kurse/update HTTP/1.1
+Content-Type: application/json
+
+{"oldContent" : "Kleidung nähen",
+ "newContent" : "Nähen toller Sachn die keiner braucht"}
+
+
 ### Delete by ClassNumber
-DELETE http://localhost:3000/Kurse/001 HTTP/1.1
+DELETE http://localhost:3000/Kurse/005 HTTP/1.1
+
