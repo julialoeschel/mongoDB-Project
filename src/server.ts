@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import { connectDatabase, getUserCollection } from './utils/database';
 
 if (!process.env.KEY_URL_MONGOBD)
@@ -11,6 +12,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 //View DB
 app.get('/Kurse', async (_request, response) => {
   const CoursList = await getUserCollection().find().toArray();
@@ -65,9 +67,7 @@ app.post('/Kurse/001', async (request, response) => {
     );
   } else {
     await getUserCollection().insertOne(newParticipant);
-    response.send(
-      `new Participant with name ${newParticipant.name} added to Course!`
-    );
+    response.send(`new Admin with name ${newParticipant.name} added!`);
   }
 });
 
@@ -77,17 +77,21 @@ app.delete('/Kurse/:classNumber', async (request, response) => {
   const doesCourseExist = await getUserCollection().findOne({
     classNumber: classNumberToBeDeleted,
   });
-  if (doesCourseExist) {
-    await getUserCollection().deleteOne({
-      classNumber: classNumberToBeDeleted,
-    });
-    response.send(
-      `DELETE SUCCESSFULL! Course with Number ${classNumberToBeDeleted} deleted!`
-    );
-  } else
-    response.send(
-      `DELETE FAIL! Course with Number ${classNumberToBeDeleted} does not exist!`
-    );
+  const rUloggedIn = request.cookies.username === 'admin';
+  console.log(rUloggedIn);
+  if (rUloggedIn) {
+    if (doesCourseExist) {
+      await getUserCollection().deleteOne({
+        classNumber: classNumberToBeDeleted,
+      });
+      response.send(
+        `DELETE SUCCESSFULL! Course with Number ${classNumberToBeDeleted} deleted!`
+      );
+    } else
+      response.send(
+        `DELETE FAIL! Course with Number ${classNumberToBeDeleted} does not exist!`
+      );
+  } else response.send('you need to be loged in as a special admin to delete');
 });
 
 //Delete Course
@@ -107,6 +111,22 @@ app.delete('/Kurse/:username', async (request, response) => {
     response.send(
       `DELETE FAIL! username ${usernameToBeDeleted} does not exist!`
     );
+});
+
+//login
+app.post('/login', async (request, response) => {
+  const loginUser = request.body;
+  const pwIsCorrect = await getUserCollection().findOne({
+    username: loginUser.username,
+    password: loginUser.password,
+  });
+
+  if (pwIsCorrect) {
+    response.setHeader('Set-Cookie', `username=${loginUser.username}`);
+    response.send(`you are loged in as ${loginUser.username}`);
+  } else {
+    response.send('username or password not correct');
+  }
 });
 
 connectDatabase(process.env.KEY_URL_MONGOBD).then(() =>
