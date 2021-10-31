@@ -8,7 +8,7 @@ Content-Type: application/json
 {
   "cursname": "Nähen für linkshänder",
   "content": "Kleidung nähen",
-  "classNumber": "005",
+  "classNumber": "001",
   "trainer":"Elka",
   "location": "Timmendorf"
 }
@@ -31,6 +31,12 @@ Content-Type: application/json
  "newContent" : "Nähen toller Sachn die keiner braucht"}
 
 ### Informationen hinzufügen
+PATCH http://localhost:3000/addInfo/admin HTTP/1.1
+Content-Type: application/json
+
+{
+  "information": "this admin may delete Courses"
+}
 
 
 ### Delete by ClassNumber

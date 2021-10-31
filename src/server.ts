@@ -129,6 +129,22 @@ app.post('/login', async (request, response) => {
   }
 });
 
+//add one Thing(Infoemation) do document
+app.patch('/addInfo/:user', async (request, response) => {
+  const UserToUpdate = request.params.user;
+  const newInfo = request.body.information;
+  const newInformation = await getUserCollection().updateOne(
+    { username: UserToUpdate },
+    { $push: { information: newInfo } }
+  );
+
+  if (newInformation.modifiedCount !== 0) {
+    response.send(`Information was added to ${UserToUpdate}`);
+  } else {
+    response.send('Nothing was modified');
+  }
+});
+
 connectDatabase(process.env.KEY_URL_MONGOBD).then(() =>
   app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
