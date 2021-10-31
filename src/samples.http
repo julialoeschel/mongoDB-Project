@@ -12,14 +12,15 @@ Content-Type: application/json
   "trainer":"Elka",
   "location": "Timmendorf"
 }
-### einfügen neuer Teilnehmer
+### einfügen Admin
 POST http://localhost:3000/Kurse/001 HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Ines",
-  "username": "Müller",
-  "attendClassNumber": "005"
+  "name": "Peter Lustig",
+  "username": "Admin",
+  "password": "123",
+  "Infomation":"Löschen von Kursen nicht erlaubt"
 }
 
 ### Update content
@@ -29,7 +30,17 @@ Content-Type: application/json
 {"oldContent" : "Kleidung nähen",
  "newContent" : "Nähen toller Sachn die keiner braucht"}
 
+### Informationen hinzufügen
+
 
 ### Delete by ClassNumber
 DELETE http://localhost:3000/Kurse/005 HTTP/1.1
 
+### login
+POST http://localhost:3000/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "username": "admin", 
+"password": "admin"
+}
